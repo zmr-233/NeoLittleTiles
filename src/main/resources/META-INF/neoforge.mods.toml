@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+issueTrackerURL="https://github.com/CreativeMD/NeoLittleTiles/issues"
+license="LGPL-3.0-only"
+
+[[mods]]
+    modId="neolittletiles"
+    logoFile="neolittletiles.png"
+    version="1.0.0-pre1"
+    displayName="NeoLittleTiles"
+    displayURL="https://github.com/CreativeMD/NeoLittleTiles"
+    authors="CreativeMD"
+    description='''NeoLittleTiles - Complete rewrite of LittleTiles for modern Minecraft.
+Subblock precision construction with improved performance and maintainability.'''
+
+[[dependencies.neolittletiles]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.neolittletiles]]
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1,1.22)"
+    ordering="NONE"
+    side="BOTH"
+

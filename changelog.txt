@@ -1,0 +1,8 @@
+1.0.0-pre1
+
+Initial alpha release of NeoLittleTiles - Complete rewrite of LittleTiles for modern Minecraft
+Optimized grid system with bit operations for improved performance
+Flattened tile hierarchy to reduce memory usage
+Streamlined action system with reduced object allocation
+Core math primitives (NeoBox, NeoGrid) for efficient coordinate operations
+Foundation for future tile construction and structure systems

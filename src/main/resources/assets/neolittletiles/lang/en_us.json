@@ -1,0 +1,13 @@
+{
+  "itemGroup.neolittletiles": "Example Mod Tab",
+  "block.neolittletiles.example_block": "Example Block",
+  "item.neolittletiles.example_item": "Example Item",
+
+  "neolittletiles.configuration.title": "NeoLittleTiles Configs",
+  "neolittletiles.configuration.section.neolittletiles.common.toml": "NeoLittleTiles Configs",
+  "neolittletiles.configuration.section.neolittletiles.common.toml.title": "NeoLittleTiles Configs",
+  "neolittletiles.configuration.items": "Item List",
+  "neolittletiles.configuration.logDirtBlock": "Log Dirt Block",
+  "neolittletiles.configuration.magicNumberIntroduction": "Magic Number Text",
+  "neolittletiles.configuration.magicNumber": "Magic Number"
+}

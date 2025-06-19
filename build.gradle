@@ -1,0 +1,32 @@
+// NeoLittleTiles optimized build configuration
+// Minimal plugin set to avoid conflicts with root build.gradle
+
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+    id 'com.modrinth.minotaur' version '2.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.+'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.neoforged.net/releases' }
+    maven {
+        name = 'CreativeMD Maven'  
+        url = 'https://maven.creativemd.de/repository/public/'
+    }
+}
+
+dependencies {
+    // Use implementation to ensure NeoForge runtime availability
+    implementation "net.neoforged:neoforge:21.1.173"
+    // Use project dependencies for existing modules
+    implementation project(':CreativeCore')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
