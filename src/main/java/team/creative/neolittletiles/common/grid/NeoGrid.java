@@ -98,6 +98,36 @@ public class NeoGrid {
         return n > 0 && (n & (n - 1)) == 0;
     }
     
+    /**
+     * Get a NeoGrid instance by size, creating if necessary
+     * @param size Grid size (must be power of 2)
+     * @return NeoGrid instance
+     */
+    public static NeoGrid getBySize(int size) {
+        return switch (size) {
+            case 1 -> GRID_1;
+            case 2 -> GRID_2;
+            case 4 -> GRID_4;
+            case 8 -> GRID_8;
+            case 16 -> GRID_16;
+            case 32 -> GRID_32;
+            case 64 -> GRID_64;
+            case 128 -> GRID_128;
+            case 256 -> GRID_256;
+            case 512 -> GRID_512;
+            case 1024 -> GRID_1024;
+            case 2048 -> GRID_2048;
+            case 4096 -> GRID_4096;
+            default -> {
+                if (isPowerOfTwo(size)) {
+                    yield new NeoGrid(size);
+                } else {
+                    throw new IllegalArgumentException("Grid size must be power of 2: " + size);
+                }
+            }
+        };
+    }
+    
     @Override
     public String toString() {
         return "NeoGrid[" + size + "]";

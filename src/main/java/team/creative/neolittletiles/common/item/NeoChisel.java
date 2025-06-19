@@ -1,10 +1,23 @@
 package team.creative.neolittletiles.common.item;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import team.creative.neolittletiles.common.action.NeoAction;
 import team.creative.neolittletiles.common.action.NeoPlaceAction;
 import team.creative.neolittletiles.common.action.NeoDestroyAction;
+import team.creative.neolittletiles.common.block.NeoTilesBlock;
+import team.creative.neolittletiles.common.block.NeoTilesBlockEntity;
 import team.creative.neolittletiles.common.grid.NeoGrid;
+import team.creative.neolittletiles.common.gui.NeoConfigGuiLayer;
 import team.creative.neolittletiles.common.math.NeoBox;
+import team.creative.neolittletiles.common.tile.NeoTile;
 
 /**
  * NeoChisel - Simplified chisel tool for tile placement and destruction
@@ -17,12 +30,79 @@ import team.creative.neolittletiles.common.math.NeoBox;
  * 
  * Based on analysis of ItemLittleChisel.java and LittleToolShaper.java
  */
-public class NeoChisel {
+public class NeoChisel extends Item {
     
     public static final String ITEM_ID = "neochisel";
     private static final NeoGrid DEFAULT_GRID = NeoGrid.GRID_16;
     
-    // Placeholder for Item class - will be replaced when Minecraft dependencies are resolved
+    public NeoChisel(Properties properties) {
+        super(properties);
+    }
+    
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Player player = context.getPlayer();
+        
+        if (!level.isClientSide && player != null) {
+            // Check for sneak-click to open configuration GUI
+            if (player.isShiftKeyDown()) {
+                openConfigurationGUI(player);
+                return InteractionResult.SUCCESS;
+            }
+            
+            // Create a small tile placement
+            NeoBox placementBox = getPlacementBox(context);
+            BlockState blockState = Blocks.STONE.defaultBlockState(); // Default to stone for MVP
+            
+            // Ensure we have a NeoTiles block at this position
+            if (!(level.getBlockState(pos).getBlock() instanceof NeoTilesBlock)) {
+                level.setBlock(pos, team.creative.neolittletiles.NeoLittleTilesRegistry.getNeoTilesBlock().defaultBlockState(), 3);
+            }
+            
+            // Add tile to block entity
+            NeoTilesBlockEntity blockEntity = NeoTilesBlock.getBlockEntity(level, pos);
+            if (blockEntity != null) {
+                NeoTile tile = new NeoTile(placementBox, blockState);
+                boolean success = blockEntity.addTile(tile);
+                
+                System.out.println("NeoChisel placement: " + (success ? "SUCCESS" : "FAIL"));
+                System.out.println("Placed tile: " + tile);
+                
+                return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+            }
+        }
+        
+        return InteractionResult.PASS;
+    }
+    
+    /**
+     * Get placement box from context
+     * @param context Use context with hit result
+     * @return Placement box for tile
+     */
+    private NeoBox getPlacementBox(UseOnContext context) {
+        // For MVP, create a quarter-block tile at the hit location
+        int size = DEFAULT_GRID.getSize() / 4; // 4x4x4 in a 16x16x16 grid
+        
+        // Get the face that was clicked and offset accordingly
+        var face = context.getClickedFace();
+        var hitPos = context.getClickLocation();
+        var blockPos = context.getClickedPos();
+        
+        // Calculate relative position within the block (0-15 in grid coordinates)
+        int relX = (int) ((hitPos.x - blockPos.getX()) * DEFAULT_GRID.getSize());
+        int relY = (int) ((hitPos.y - blockPos.getY()) * DEFAULT_GRID.getSize());
+        int relZ = (int) ((hitPos.z - blockPos.getZ()) * DEFAULT_GRID.getSize());
+        
+        // Clamp to valid range
+        relX = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relX));
+        relY = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relY));
+        relZ = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relZ));
+        
+        return new NeoBox(relX, relY, relZ, relX + size, relY + size, relZ + size);
+    }
     
     /**
      * Handle left click - place tiles
@@ -177,5 +257,18 @@ public class NeoChisel {
         
         // For MVP, always allow usage
         return true;
+    }
+    
+    /**
+     * Open configuration GUI for this tool
+     * @param player Player to open GUI for
+     */
+    private void openConfigurationGUI(Player player) {
+        // TODO: Implement proper GUI opening when CreativeCore integration is ready
+        System.out.println("Opening NeoChisel configuration GUI for player: " + player.getName().getString());
+        
+        // For MVP, just log the action
+        NeoConfigGuiLayer configGui = NeoConfigGuiLayer.createForTool(ITEM_ID, player);
+        configGui.show();
     }
 }

@@ -1,9 +1,18 @@
 package team.creative.neolittletiles.common.item;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import team.creative.neolittletiles.common.action.NeoAction;
 import team.creative.neolittletiles.common.action.NeoDestroyAction;
+import team.creative.neolittletiles.common.block.NeoTilesBlock;
+import team.creative.neolittletiles.common.block.NeoTilesBlockEntity;
 import team.creative.neolittletiles.common.grid.NeoGrid;
 import team.creative.neolittletiles.common.math.NeoBox;
+
+import java.util.List;
 
 /**
  * NeoHammer - Specialized destruction tool for efficient tile removal
@@ -16,7 +25,7 @@ import team.creative.neolittletiles.common.math.NeoBox;
  * 
  * Based on LittleTiles hammer tool functionality
  */
-public class NeoHammer {
+public class NeoHammer extends Item {
     
     public static final String ITEM_ID = "neohammer";
     private static final NeoGrid DEFAULT_GRID = NeoGrid.GRID_16;
@@ -24,7 +33,67 @@ public class NeoHammer {
     // Destruction sizes (in grid units)
     private static final int[] DESTRUCTION_SIZES = {1, 2, 4, 8, 16, 32};
     
-    // Placeholder for Item class - will be replaced when Minecraft dependencies are resolved
+    public NeoHammer(Properties properties) {
+        super(properties);
+    }
+    
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        
+        if (!level.isClientSide) {
+            // Check if we're targeting a NeoTiles block
+            if (level.getBlockState(pos).getBlock() instanceof NeoTilesBlock) {
+                NeoTilesBlockEntity blockEntity = NeoTilesBlock.getBlockEntity(level, pos);
+                if (blockEntity != null) {
+                    // Create destruction area
+                    NeoBox destructionArea = getDestructionArea(context);
+                    
+                    // Remove tiles from block entity
+                    var removedTiles = blockEntity.removeTiles(destructionArea);
+                    
+                    System.out.println("NeoHammer destruction: removed " + removedTiles.size() + " tiles");
+                    System.out.println("Destruction area: " + destructionArea);
+                    
+                    // If no tiles remain, consider removing the block
+                    if (!blockEntity.hasTiles()) {
+                        // TODO: Remove block or keep for future tiles
+                        System.out.println("Block entity is now empty");
+                    }
+                    
+                    return removedTiles.isEmpty() ? InteractionResult.FAIL : InteractionResult.SUCCESS;
+                }
+            }
+        }
+        
+        return InteractionResult.PASS;
+    }
+    
+    /**
+     * Get destruction area from context
+     * @param context Use context with hit result
+     * @return Destruction area for tiles
+     */
+    private NeoBox getDestructionArea(UseOnContext context) {
+        // For MVP, create a 2x2x2 destruction area
+        int size = DEFAULT_GRID.getSize() / 8; // 2x2x2 in a 16x16x16 grid
+        
+        var hitPos = context.getClickLocation();
+        var blockPos = context.getClickedPos();
+        
+        // Calculate relative position within the block (0-15 in grid coordinates)
+        int relX = (int) ((hitPos.x - blockPos.getX()) * DEFAULT_GRID.getSize());
+        int relY = (int) ((hitPos.y - blockPos.getY()) * DEFAULT_GRID.getSize());
+        int relZ = (int) ((hitPos.z - blockPos.getZ()) * DEFAULT_GRID.getSize());
+        
+        // Center the destruction area on the hit point
+        relX = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relX - size/2));
+        relY = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relY - size/2));
+        relZ = Math.max(0, Math.min(DEFAULT_GRID.getSize() - size, relZ - size/2));
+        
+        return new NeoBox(relX, relY, relZ, relX + size, relY + size, relZ + size);
+    }
     
     /**
      * Handle left click - area destruction

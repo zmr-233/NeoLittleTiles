@@ -1,13 +1,22 @@
 {
-  "itemGroup.neolittletiles": "Example Mod Tab",
-  "block.neolittletiles.example_block": "Example Block",
-  "item.neolittletiles.example_item": "Example Item",
+  "itemGroup.neolittletiles": "NeoLittleTiles",
+  
+  "block.neolittletiles.neotiles": "Neo Tiles",
+  
+  "item.neolittletiles.neochisel": "Neo Chisel",
+  "item.neolittletiles.neohammer": "Neo Hammer", 
+  "item.neolittletiles.neoblueprint": "Neo Blueprint",
+  
+  "tooltip.neolittletiles.neochisel": "Precision tile placement tool",
+  "tooltip.neolittletiles.neohammer": "Efficient tile destruction tool",
+  "tooltip.neolittletiles.neoblueprint": "Structure save/load system",
+  
+  "gui.neolittletiles.blueprint": "Blueprint",
+  "gui.neolittletiles.tool_config": "Tool Configuration",
+  "gui.neolittletiles.structure_preview": "Structure Preview",
+  "gui.neolittletiles.grid_selector": "Grid Selector",
 
   "neolittletiles.configuration.title": "NeoLittleTiles Configs",
   "neolittletiles.configuration.section.neolittletiles.common.toml": "NeoLittleTiles Configs",
-  "neolittletiles.configuration.section.neolittletiles.common.toml.title": "NeoLittleTiles Configs",
-  "neolittletiles.configuration.items": "Item List",
-  "neolittletiles.configuration.logDirtBlock": "Log Dirt Block",
-  "neolittletiles.configuration.magicNumberIntroduction": "Magic Number Text",
-  "neolittletiles.configuration.magicNumber": "Magic Number"
+  "neolittletiles.configuration.section.neolittletiles.common.toml.title": "NeoLittleTiles Configs"
 }

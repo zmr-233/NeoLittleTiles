@@ -1,5 +1,7 @@
 package team.creative.neolittletiles.test;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import team.creative.neolittletiles.common.action.NeoAction;
 import team.creative.neolittletiles.common.action.NeoPlaceAction;
 import team.creative.neolittletiles.common.action.NeoDestroyAction;
@@ -71,7 +73,7 @@ public class MVPTest {
     private static void testBlockEntityOperations() {
         System.out.println("=== Block Entity Operations Test ===");
         
-        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity();
+        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
         NeoGrid grid = NeoGrid.GRID_16;
         blockEntity.setGrid(grid);
         
@@ -181,7 +183,7 @@ public class MVPTest {
         System.out.println("=== Rendering Pipeline Test ===");
         
         // Create block entity with tiles
-        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity();
+        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
         blockEntity.addTile(new NeoTile(new NeoBox(0, 0, 0, 8, 8, 8), "minecraft:stone"));
         blockEntity.addTile(new NeoTile(new NeoBox(8, 0, 0, 16, 8, 8), "minecraft:dirt", 0xFFFF0000));
         
@@ -216,7 +218,7 @@ public class MVPTest {
         // Simulate complete placement -> rendering -> destruction workflow
         
         // 1. Start with empty block entity
-        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity();
+        NeoTilesBlockEntity blockEntity = new NeoTilesBlockEntity(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
         assert blockEntity.getTileCount() == 0 : "Should start empty";
         
         // 2. Place some tiles via actions
